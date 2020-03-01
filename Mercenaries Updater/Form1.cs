@@ -40,7 +40,7 @@ namespace Mercenaries_Updater
 
             try
             {
-                string version = Get(@"http://localhost/data.txt");
+                string version = Get(@"https://raw.githubusercontent.com/PitchRE/Mercenaries-Client/master/version.txt");
                 version = version.Substring(version.LastIndexOf(':') + 1);
                 version_label.Text = version;
                 checksum = Get(@"https://raw.githubusercontent.com/PitchRE/Mercenaries-Client/master/checksum.txt");
