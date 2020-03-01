@@ -33,6 +33,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.version_label = new System.Windows.Forms.Label();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.local_version = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // progressBar1
@@ -80,11 +82,31 @@
             this.richTextBox1.TabIndex = 4;
             this.richTextBox1.Text = "";
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 51);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(74, 13);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "Local Version:";
+            // 
+            // local_version
+            // 
+            this.local_version.AutoSize = true;
+            this.local_version.Location = new System.Drawing.Point(106, 51);
+            this.local_version.Name = "local_version";
+            this.local_version.Size = new System.Drawing.Size(53, 13);
+            this.local_version.TabIndex = 6;
+            this.local_version.Text = "Unknown";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(479, 306);
+            this.Controls.Add(this.local_version);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.version_label);
             this.Controls.Add(this.label1);
@@ -105,6 +127,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label version_label;
         private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label local_version;
     }
 }
 

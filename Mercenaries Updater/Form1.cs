@@ -36,7 +36,12 @@ namespace Mercenaries_Updater
 
         private void Form1_Load(object sender, EventArgs e)
         {
-        
+           if(File.Exists(escapeString + "version.txt"))
+            {
+                string version = File.ReadAllText(escapeString + "version.txt");
+                version = version.Substring(version.LastIndexOf(':') + 1);
+                local_version.Text = version;
+            }
 
             try
             {
