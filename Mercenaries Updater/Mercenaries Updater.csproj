@@ -103,6 +103,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Mercenaries Updater_TemporaryKey.pfx" />
     <None Include="packages.config" />
@@ -133,6 +134,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="mb_wfas_206.ico" />
+    <None Include="Resources\360fx360f.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

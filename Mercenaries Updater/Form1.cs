@@ -67,11 +67,6 @@ namespace Mercenaries_Updater
             Task task2 = task1.ContinueWith(antTask => DownloadPrepare());
        
 
-
-
-
-
-
         }
 
 
@@ -92,7 +87,6 @@ namespace Mercenaries_Updater
             foreach (string link in links)
             {
           
-                Debug.WriteLine(link);
                 DownloadFile(link, id);
             }
         }
@@ -114,11 +108,14 @@ namespace Mercenaries_Updater
         private void Client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
 
-            string mynumber = ((System.Net.WebClient)(sender)).QueryString["number"];
+            
+            string mynumber = ((System.Net.WebClient)(sender)).QueryString["name"];
+      
             number++;
             this.Invoke((MethodInvoker)delegate {
                 progressBar1.Value = number;
-               
+          
+
             });
             Debug.WriteLine($"Finished {number}/{links.Count}");
         }
@@ -134,13 +131,27 @@ namespace Mercenaries_Updater
             WebClient client = new WebClient();
             string filename = link;
             link = @"https://raw.githubusercontent.com/PitchRE/Mercenaries-Client/master/" + link;
-            Debug.WriteLine(filename);
             client.DownloadProgressChanged += Client_DownloadProgressChanged;
             client.DownloadFileCompleted += Client_DownloadFileCompleted;
-            client.DownloadFileAsync(new Uri(link.Replace("../", "")), filename);
-            Debug.WriteLine($"Downloading {link}");
-            this.Invoke((MethodInvoker)delegate {
-                richTextBox1.AppendText($"Downloaded {filename} \n");
+            client.QueryString.Add("name", filename);
+            string newDir = System.IO.Path.GetDirectoryName(filename);
+
+
+            string dir = new FileInfo(filename).Directory.FullName;
+            Debug.WriteLine(dir + ">>>" + Directory.Exists(dir) + "\n");
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
+            link = link.Replace("../", "");
+            client.DownloadFileAsync(new Uri(link), filename);
+
+
+
+            this.Invoke((MethodInvoker)delegate
+            {
+                richTextBox1.AppendText($"Downloaded {filename} from {link} \n");
             });
 
             return Task.FromResult<object>(null);
@@ -171,7 +182,7 @@ namespace Mercenaries_Updater
             using (SHA256 mySHA256 = SHA256.Create())
             {
                 string filepath = escapeString + path;
-                if (path == "checksum.txt" || path == "version.txt") return false;
+                if (path == "checksum.txt") return false;
             
                 if (File.Exists(filepath))
                 {
@@ -185,7 +196,10 @@ namespace Mercenaries_Updater
                     if (StringByte == hash)
                     {
                         Console.WriteLine($"True: {filepath}");
-                  
+                        this.Invoke((MethodInvoker)delegate {
+                            richTextBox1.AppendText($"OK: {filepath} \n");
+
+                        });
 
 
 
