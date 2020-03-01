@@ -80,6 +80,13 @@ namespace Mercenaries_Updater
        
             this.Invoke((MethodInvoker)delegate {
                 progressBar1.Maximum = links.Count;
+                if(links.Count == 0)
+                {
+                    progressBar1.Maximum = 1;
+                    progressBar1.Value = 1;
+                    MessageBox.Show("Nothing to download");
+                }
+                
             });
 
             foreach (string link in links)
@@ -111,7 +118,7 @@ namespace Mercenaries_Updater
             number++;
             this.Invoke((MethodInvoker)delegate {
                 progressBar1.Value = number;
-                if (progressBar1.Value == progressBar1.Maximum) MessageBox.Show("Update Finished.");
+               
             });
             Debug.WriteLine($"Finished {number}/{links.Count}");
         }
@@ -164,10 +171,11 @@ namespace Mercenaries_Updater
             using (SHA256 mySHA256 = SHA256.Create())
             {
                 string filepath = escapeString + path;
-              
-
+                if (path == "checksum.txt" || path == "version.txt") return false;
+            
                 if (File.Exists(filepath))
                 {
+                   
                         var fi1 = new FileInfo(filepath);
                         FileStream fileStream = fi1.Open(FileMode.Open);
                         byte[] hashValue = mySHA256.ComputeHash(fileStream);
@@ -184,10 +192,12 @@ namespace Mercenaries_Updater
                         return true;
                     } else
                     {
+                      
                         links.Add(filepath);
                         Console.WriteLine($"False: {filepath}");
                         this.Invoke((MethodInvoker)delegate {
                             richTextBox1.AppendText($"Corrupted: {filepath} \n");
+         
                         });
                         return false;
                     }
