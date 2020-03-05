@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 
+
 namespace Mercenaries_Updater
 {
     public partial class Form1 : Form
@@ -30,6 +31,7 @@ namespace Mercenaries_Updater
         string checksum;
         int id = 0;
         string escapeString = @"../";
+        string lcl_version = null;
 
      
         
@@ -39,20 +41,58 @@ namespace Mercenaries_Updater
            if(File.Exists(escapeString + "version.txt"))
             {
                 string version = File.ReadAllText(escapeString + "version.txt");
-                version = version.Substring(version.LastIndexOf(':') + 1);
                 local_version.Text = version;
+                lcl_version = version;
+
+
+
             }
+
+       
 
             try
             {
-                string version = Get(@"https://raw.githubusercontent.com/PitchRE/Mercenaries-Client/master/version.txt");
-                version = version.Substring(version.LastIndexOf(':') + 1);
+                string version = Get(@"https://raw.githubusercontent.com/PitchRE/Mercenaries/master/version.txt");
                 version_label.Text = version;
-                checksum = Get(@"https://raw.githubusercontent.com/PitchRE/Mercenaries-Client/master/checksum.txt");
+                checksum = Get(@"https://raw.githubusercontent.com/PitchRE/Mercenaries/master/checksum.txt");
+
+
+         
+                if (version == "0x00")
+                {
+                    MessageBox.Show("Check Mercenaries website for new updater version. You use deprecated updater. \n Program will be terminated.");
+                    System.Windows.Forms.Application.Exit();
+                }
+
+                if (lcl_version == null) lcl_version = "0.0.0";
+             
+
+                var version_l = new Version(lcl_version);
+                    var version_O = new Version(version);
+
+                    var result = version_O.CompareTo(version_l);
+           
+            
+
+         
+
+                if (result > 0)
+                {
+                    MessageBox.Show($"Update required. \n Local version {local_version.Text} \n Remote Version: {version}");
+                  
+                } else
+                {
+                    MessageBox.Show("You have newest version of Mercenaries. \n You still can verify game files.");
+                }
+
                 button1.Enabled = true;
             } catch
             {
+            
+
                 version_label.Text = "Error. Couldn't connect to server.";
+                MessageBox.Show("Error. Couldn't connect to server. Possible solutions If the problem persists: \n Try removing version.txt from Mercenaries directory. \n Check Mercenaries website for new updater version. You might use deprecated updater.");
+
             }
     
         }
@@ -130,7 +170,7 @@ namespace Mercenaries_Updater
            
             WebClient client = new WebClient();
             string filename = link;
-            link = @"https://raw.githubusercontent.com/PitchRE/Mercenaries-Client/master/" + link;
+            link = @"https://raw.githubusercontent.com/PitchRE/Mercenaries/master/" + link;
             client.DownloadProgressChanged += Client_DownloadProgressChanged;
             client.DownloadFileCompleted += Client_DownloadFileCompleted;
             client.QueryString.Add("name", filename);
@@ -241,6 +281,7 @@ namespace Mercenaries_Updater
 
         }
 
+      
     }
 
 }
