@@ -36,21 +36,24 @@
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.local_version = new System.Windows.Forms.Label();
+            this.button2 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(12, 256);
+            this.progressBar1.BackColor = System.Drawing.Color.White;
+            this.progressBar1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.progressBar1.Location = new System.Drawing.Point(15, 357);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(455, 38);
+            this.progressBar1.Size = new System.Drawing.Size(590, 54);
             this.progressBar1.TabIndex = 0;
             // 
             // button1
             // 
             this.button1.Enabled = false;
-            this.button1.Location = new System.Drawing.Point(12, 222);
+            this.button1.Location = new System.Drawing.Point(631, 357);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(119, 28);
+            this.button1.Size = new System.Drawing.Size(119, 25);
             this.button1.TabIndex = 1;
             this.button1.Text = "Update";
             this.button1.UseVisualStyleBackColor = true;
@@ -59,6 +62,8 @@
             // label1
             // 
             this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.Black;
+            this.label1.ForeColor = System.Drawing.Color.White;
             this.label1.Location = new System.Drawing.Point(12, 21);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(88, 13);
@@ -68,6 +73,8 @@
             // version_label
             // 
             this.version_label.AutoSize = true;
+            this.version_label.BackColor = System.Drawing.Color.Transparent;
+            this.version_label.ForeColor = System.Drawing.Color.White;
             this.version_label.Location = new System.Drawing.Point(106, 21);
             this.version_label.Name = "version_label";
             this.version_label.Size = new System.Drawing.Size(53, 13);
@@ -76,16 +83,21 @@
             // 
             // richTextBox1
             // 
-            this.richTextBox1.Location = new System.Drawing.Point(15, 87);
+            this.richTextBox1.BackColor = System.Drawing.Color.Black;
+            this.richTextBox1.ForeColor = System.Drawing.SystemColors.MenuBar;
+            this.richTextBox1.Location = new System.Drawing.Point(213, 294);
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.ReadOnly = true;
-            this.richTextBox1.Size = new System.Drawing.Size(452, 129);
+            this.richTextBox1.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+            this.richTextBox1.Size = new System.Drawing.Size(333, 57);
             this.richTextBox1.TabIndex = 4;
             this.richTextBox1.Text = "";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
+            this.label2.BackColor = System.Drawing.Color.Transparent;
+            this.label2.ForeColor = System.Drawing.Color.White;
             this.label2.Location = new System.Drawing.Point(12, 51);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(74, 13);
@@ -95,19 +107,33 @@
             // local_version
             // 
             this.local_version.AutoSize = true;
+            this.local_version.BackColor = System.Drawing.Color.Transparent;
+            this.local_version.ForeColor = System.Drawing.Color.White;
             this.local_version.Location = new System.Drawing.Point(106, 51);
             this.local_version.Name = "local_version";
             this.local_version.Size = new System.Drawing.Size(53, 13);
             this.local_version.TabIndex = 6;
             this.local_version.Text = "Unknown";
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(631, 388);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(119, 25);
+            this.button2.TabIndex = 7;
+            this.button2.Text = "Copy Log";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.SaddleBrown;
+            this.BackColor = System.Drawing.Color.White;
+            this.BackgroundImage = global::Mercenaries_Updater.Properties.Resources.mercenaries;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.ClientSize = new System.Drawing.Size(504, 307);
+            this.ClientSize = new System.Drawing.Size(779, 435);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.local_version);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.richTextBox1);
@@ -118,6 +144,7 @@
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "Mercenaries Updater";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -135,6 +162,7 @@
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label local_version;
+        private System.Windows.Forms.Button button2;
     }
 }
 

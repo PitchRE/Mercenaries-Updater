@@ -16,11 +16,15 @@ using System.Security.Cryptography;
 
 namespace Mercenaries_Updater
 {
+
+
     public partial class Form1 : Form
     {
+
       
         public Form1()
         {
+           
             InitializeComponent();
 
 
@@ -32,6 +36,8 @@ namespace Mercenaries_Updater
         int id = 0;
         string escapeString = @"../";
         string lcl_version = null;
+        int result;
+        bool versionRdy = true;
 
      
         
@@ -65,24 +71,41 @@ namespace Mercenaries_Updater
                 }
 
                 if (lcl_version == null) lcl_version = "0.0.0";
-             
 
-                var version_l = new Version(lcl_version);
+                try
+                {
+                    var version_l = new Version(lcl_version);
                     var version_O = new Version(version);
 
-                    var result = version_O.CompareTo(version_l);
-           
+                    result = version_O.CompareTo(version_l);
+                }
+                
+                catch
+                {
+                    versionRdy = false;
+            }
             
 
-         
-
-                if (result > 0)
+               if(versionRdy == false)
                 {
-                    MessageBox.Show($"Update required. \n Local version {local_version.Text} \n Remote Version: {version}");
+                    richTextBox1.AppendText("Something went wrong... Please verify game files.");
+                }
+
+                else if (result > 0)
+                {
                   
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        richTextBox1.AppendText($"Local version {local_version.Text} \n Remote Version: {version} Your game is outdated.");
+                    });
+
                 } else
                 {
-                    MessageBox.Show("You have newest version of Mercenaries. \n You still can verify game files.");
+              
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        richTextBox1.AppendText("Looks like you have newest version of Mercenaries. \n You still can verify game files.");
+                    });
                 }
 
                 button1.Enabled = true;
@@ -96,7 +119,8 @@ namespace Mercenaries_Updater
             }
     
         }
-   
+
+    
 
         private  void button1_Click(object sender, EventArgs e)
         {
@@ -154,7 +178,9 @@ namespace Mercenaries_Updater
             number++;
             this.Invoke((MethodInvoker)delegate {
                 progressBar1.Value = number;
-          
+                richTextBox1.AppendText($"Downloaded {mynumber}... \n");
+                if (number == links.Count) richTextBox1.AppendText($"Finished. Your game is ready.");
+
 
             });
             Debug.WriteLine($"Finished {number}/{links.Count}");
@@ -191,7 +217,7 @@ namespace Mercenaries_Updater
 
             this.Invoke((MethodInvoker)delegate
             {
-                richTextBox1.AppendText($"Downloaded {filename} from {link} \n");
+                richTextBox1.AppendText($"Downloading {filename}... \n");
             });
 
             return Task.FromResult<object>(null);
@@ -281,7 +307,10 @@ namespace Mercenaries_Updater
 
         }
 
-      
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(richTextBox1.Text);
+        }
     }
 
 }

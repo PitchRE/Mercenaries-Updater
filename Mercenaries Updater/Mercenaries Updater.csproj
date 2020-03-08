@@ -134,6 +134,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="mb_wfas_206.ico" />
+    <None Include="Resources\mercenaries.jpeg" />
     <None Include="Resources\360fx360f.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
