@@ -12,20 +12,22 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
+using Microsoft.Win32;
 
 
 namespace Mercenaries_Updater
 {
-
-
+   
     public partial class Form1 : Form
     {
 
       
         public Form1()
         {
-           
+
+         
             InitializeComponent();
+       
 
 
         }
@@ -34,17 +36,42 @@ namespace Mercenaries_Updater
         int number = 0;
         string checksum;
         int id = 0;
-        string escapeString = @"../";
+        string escapeString = @"";
         string lcl_version = null;
         int result;
         bool versionRdy = true;
+        string GithubLink;
+        bool loading = true;
 
-     
-        
+
 
         private void Form1_Load(object sender, EventArgs e)
         {
-           if(File.Exists(escapeString + "version.txt"))
+         
+             if (!File.Exists(@"../../mb_wfas.exe"))
+             {
+                 MessageBox.Show(@"Your Mercenaries Updater is in wrong directory.  Correct directory looks like Mount & Blade With Fire and Sword\Modules\Mercenaries\Updater ");
+                 System.Windows.Forms.Application.Exit();
+             }
+
+
+            comboBox1.SelectedItem = Properties.Settings.Default.version_type.ToString();
+            if (comboBox1.SelectedItem == null) comboBox1.SelectedIndex = 0;
+            loading = false;
+
+       
+            if(comboBox1.SelectedIndex == 0)
+            {
+                GithubLink = "https://raw.githubusercontent.com/PitchRE/Mercenaries/master/";
+            } else if(comboBox1.SelectedIndex == 1) {
+                GithubLink = "https://raw.githubusercontent.com/PitchRE/Mercenaries/Nightly-Build/";
+            } else
+            {
+                GithubLink = "https://raw.githubusercontent.com/PitchRE/Mercenaries/master/";
+            }
+        
+
+            if (File.Exists(escapeString + "version.txt"))
             {
                 string version = File.ReadAllText(escapeString + "version.txt");
                 local_version.Text = version;
@@ -54,20 +81,20 @@ namespace Mercenaries_Updater
 
             }
 
-       
-
+         
+     
             try
             {
-                string version = Get(@"https://raw.githubusercontent.com/PitchRE/Mercenaries/master/version.txt");
+                string version = Get(GithubLink + "version.txt");
                 version_label.Text = version;
-                checksum = Get(@"https://raw.githubusercontent.com/PitchRE/Mercenaries/master/checksum.txt");
+                checksum = Get(GithubLink + "checksum.txt");
 
 
          
                 if (version == "0x00")
                 {
                     MessageBox.Show("Check Mercenaries website for new updater version. You use deprecated updater. \n Program will be terminated.");
-                    System.Windows.Forms.Application.Exit();
+                   System.Windows.Forms.Application.Exit();
                 }
 
                 if (lcl_version == null) lcl_version = "0.0.0";
@@ -128,7 +155,11 @@ namespace Mercenaries_Updater
 
             button1.Enabled = false;
             Task task1 = Task.Factory.StartNew(() => CheckChecksum());
-            Task task2 = task1.ContinueWith(antTask => DownloadPrepare());
+   
+
+            Task task2 = task1.ContinueWith(antTask => DeleteUnused());
+
+            Task task3 = task2.ContinueWith(antTask => DownloadPrepare());
        
 
         }
@@ -177,26 +208,40 @@ namespace Mercenaries_Updater
       
             number++;
             this.Invoke((MethodInvoker)delegate {
+                label5.Text = $"{number}/{links.Count}";
                 progressBar1.Value = number;
-                richTextBox1.AppendText($"Downloaded {mynumber}... \n");
-                if (number == links.Count) richTextBox1.AppendText($"Finished. Your game is ready.");
+            richTextBox1.AppendText($"Downloaded {mynumber}... \n");
+            if (number == links.Count)
+            {
+                richTextBox1.AppendText($"Finished. Your game is ready.");
+                
+
+                    try
+                    {
+                        RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\MountAndBldadeWarbandWFASKeys", true);
+                        key.SetValue("last_module_warbandd", "Mercenaries");
+                        key.Close();
+                    }
+                    catch
+                    {
+
+                    }
+                }
 
 
             });
+        
             Debug.WriteLine($"Finished {number}/{links.Count}");
-        }
-
-        private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
-        {
-
 
         }
+
+
         private Task DownloadFile(string link, int value)
         {
-           
+          
             WebClient client = new WebClient();
             string filename = link;
-            link = @"https://raw.githubusercontent.com/PitchRE/Mercenaries/master/" + link;
+            link = GithubLink + link;
             client.DownloadProgressChanged += Client_DownloadProgressChanged;
             client.DownloadFileCompleted += Client_DownloadFileCompleted;
             client.QueryString.Add("name", filename);
@@ -211,6 +256,7 @@ namespace Mercenaries_Updater
             }
 
             link = link.Replace("../", "");
+
             client.DownloadFileAsync(new Uri(link), filename);
 
 
@@ -222,6 +268,15 @@ namespace Mercenaries_Updater
 
             return Task.FromResult<object>(null);
         }
+
+        private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
+            
+
+
+        }
+
+
 
         public Boolean CheckChecksum()
         {
@@ -240,6 +295,60 @@ namespace Mercenaries_Updater
                 }
             }
             return true;
+        }
+
+        public void DeleteUnused()
+        {
+
+
+           
+                foreach (string file in Directory.EnumerateFiles(System.Environment.CurrentDirectory + escapeString, "*.*", SearchOption.AllDirectories))
+                {
+                string[] tmp2 = file.Split(new string[] { @"\Debug\" }, StringSplitOptions.None);
+                string realpath = tmp2[1];
+                realpath = realpath.Replace("\\", "/");
+                bool Exists = false;
+
+
+                using (StringReader reader = new StringReader(checksum))
+                {
+                    string line;
+
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        string[] tmp = line.Split(new string[] { ">>>" }, StringSplitOptions.None);
+                        string path = tmp[0]; ///
+          
+
+                        if(path == realpath)
+                        {
+                            Exists = true;
+                        }
+                    }
+                    if(Exists == false && realpath != "Mercenaries Updater.exe")
+                    {
+                        Debug.WriteLine(realpath);
+                        try
+                        {
+                            File.Delete(realpath);
+                            this.Invoke((MethodInvoker)delegate {
+                                richTextBox1.AppendText($"Removing: {realpath} \n");
+
+                            });
+                        } catch(Exception e)
+                        {
+                            this.Invoke((MethodInvoker)delegate {
+                                richTextBox1.AppendText($"Error: Cannot Delete{realpath} \n Reason: {e}");
+                              
+
+                            });
+                        }
+                       
+                    }
+                }
+
+            }
+            
         }
 
         public Boolean ValidHash(string path, string hash)
@@ -310,6 +419,18 @@ namespace Mercenaries_Updater
         private void button2_Click(object sender, EventArgs e)
         {
             Clipboard.SetText(richTextBox1.Text);
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (loading == true) return;
+           
+            Properties.Settings.Default["version_type"] = comboBox1.SelectedItem.ToString();
+            Properties.Settings.Default.Save();
+            System.Diagnostics.Process.Start(Application.ExecutablePath);
+            Application.Exit();
+
+
         }
     }
 
