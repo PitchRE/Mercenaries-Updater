@@ -47,15 +47,21 @@ namespace Mercenaries_Updater
 
         private void Form1_Load(object sender, EventArgs e)
         {
+
+            if (!File.Exists(@"../../mb_wfas.exe"))
+            {
+                MessageBox.Show(@"Your Mercenaries Updater is in wrong directory.  Correct directory looks like Mount & Blade With Fire and Sword\Modules\Mercenaries\Updater ");
+                System.Windows.Forms.Application.Exit();
+            }
+
+            try
+            {
+                comboBox1.SelectedItem = Properties.Settings.Default.version_type.ToString();
+            } catch
+            {
+
+            }
          
-             if (!File.Exists(@"../../mb_wfas.exe"))
-             {
-                 MessageBox.Show(@"Your Mercenaries Updater is in wrong directory.  Correct directory looks like Mount & Blade With Fire and Sword\Modules\Mercenaries\Updater ");
-                 System.Windows.Forms.Application.Exit();
-             }
-
-
-            comboBox1.SelectedItem = Properties.Settings.Default.version_type.ToString();
             if (comboBox1.SelectedItem == null) comboBox1.SelectedIndex = 0;
             loading = false;
 
@@ -304,7 +310,7 @@ namespace Mercenaries_Updater
            
                 foreach (string file in Directory.EnumerateFiles(System.Environment.CurrentDirectory + escapeString, "*.*", SearchOption.AllDirectories))
                 {
-                string[] tmp2 = file.Split(new string[] { @"\Debug\" }, StringSplitOptions.None);
+                string[] tmp2 = file.Split(new string[] { @"\Mercenaries\" }, StringSplitOptions.None);
                 string realpath = tmp2[1];
                 realpath = realpath.Replace("\\", "/");
                 bool Exists = false;
